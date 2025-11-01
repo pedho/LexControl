@@ -1,0 +1,24 @@
+<% if (erros && erros.length > 0) { %>
+  <% erros.forEach(erro => { %>
+    <div class="alert alert-danger"><%= erro.texto %></div>
+  <% }) %>
+<% } %>
+
+
+<h2>Novo tema</h2>
+<div class="card">
+    <div class="card-body">
+        <form action="/admin/advogados/add" method="post">
+
+        <label for="nome">Nome: </label>
+        <input type="text" id="nome" name="nome" placeholder="Nome do advogado" class="form-control">
+        <label for="email">Email: </label>
+        <input type="text" id="email" name="email" placeholder="Email" class="form-control">
+        <label for="senha">Senha: </label>
+        <input type="text" id="senha" name="senha" placeholder="Senha" class="form-control">
+        <br>
+        <button type="submit" class="btn btn-success">Adicionar advogado</button>
+        </form>
+
+    </div>
+</div>

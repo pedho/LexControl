@@ -1,0 +1,59 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum Status {
+  EM_ANDAMENTO
+  CONCLUIDO
+  ARQUIVADO
+  SUSPENSO
+}
+
+model Usuario {
+  usuario_id Int    @id @default(autoincrement())
+  nome       String
+  email      String @unique
+  eAdmin     Int    @default(0)
+  senha      String
+
+  casos Caso[] @relation("AdvogadoResponsavel")
+}
+
+model Cliente {
+  cliente_id Int    @id @default(autoincrement())
+  nome       String
+  telefone   String
+  endereco   String
+  email      String @unique
+  cpf_cnpj   String
+
+  casos Caso[]
+}
+
+model Caso {
+  caso_id     Int       @id @default(autoincrement())
+  titulo      String
+  status      Status    @default(EM_ANDAMENTO)
+  prazo_final DateTime?
+
+  cliente                 Cliente @relation(fields: [cliente_id], references: [cliente_id])
+  cliente_id              Int
+  advogado_responsavel    Usuario @relation("AdvogadoResponsavel", fields: [advogado_responsavel_id], references: [usuario_id])
+  advogado_responsavel_id Int
+
+  audiencias Audiencia[]
+}
+
+model Audiencia {
+  audiencia_id Int      @id @default(autoincrement())
+  data         DateTime
+  local        String
+
+  caso    Caso @relation(fields: [caso_id], references: [caso_id])
+  caso_id Int
+}
