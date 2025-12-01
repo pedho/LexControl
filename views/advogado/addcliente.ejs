@@ -24,18 +24,23 @@
       <div class="container mt-4">
       
       <div class="card">
-          <h2>Novo advogado</h2>
+          <h2>Novo Cliente</h2>
           <div class="card-body">
-              <form action="/admin/advogados/add" method="post">
+              <form action="/advogado/clientes/add" method="post">
 
               <label for="nome">Nome: </label>
-              <input type="text" id="nome" name="nome" placeholder="Nome do advogado" class="form-control">
+              <input type="text" id="nome" name="nome" placeholder="Nome do cliente" class="form-control">
+              <label for="telefone">Telefone: </label>
+              <input type="text" id="telefone" name="telefone" placeholder="Telefone" class="form-control">
+              <label for="endereco">Endereço: </label>
+              <input type="text" id="endereco" name="endereco" placeholder="Endereço" class="form-control">
               <label for="email">Email: </label>
               <input type="text" id="email" name="email" placeholder="Email" class="form-control">
-              <label for="senha_pura">Senha: </label>
-              <input type="text" id="senha_pura" name="senha_pura" placeholder="Senha" class="form-control">
+              <label for="cpf_cnpj">CPF ou CNPJ: </label>
+              <input type="text" id="cpf_cnpj" name="cpf_cnpj" placeholder="CPF ou CNPJ" class="form-control">
+              
               <br>
-              <button type="submit" class="btn btn-success">Adicionar advogado</button>
+              <button type="submit" class="btn btn-success">Adicionar cliente</button>
               </form>
 
           </div>

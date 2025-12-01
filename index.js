@@ -19,16 +19,16 @@ app.use(express.urlencoded({ extended: true }));
 
 app.use(express.static(path.join(__dirname, "public")))
 
-app.use((req, res, next) => {
-    res.locals.eUser = req.session.user || null;
-    next();
-});
-
 app.use(session({
         secret: "lexcontrollexcontrol",
         resave: true,
         saveUninitialized: true
     }))
+
+app.use((req, res, next) => {
+    res.locals.eUser = req.session.user || null;
+    next();
+});
 
 app.use(passport.initialize())
 app.use(passport.session())
@@ -81,6 +81,16 @@ app.get("/", async(req, res) => {
   res.render("./advogado/login");
 });
 
+app.get("/logout", (req, res) => {
+    req.logout(function(err) {
+        if (err) {
+            req.flash("error_msg", "Erro ao deslogar");
+            return res.redirect("/");
+        }
+        req.flash("success_msg", "Sessão encerrada");
+        res.redirect("/");
+    });
+});
 
 app.get("/inicio", eUser, async(req, res) => {
   res.render("index");

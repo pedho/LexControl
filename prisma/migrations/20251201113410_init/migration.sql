@@ -1,14 +1,5 @@
-/*
-  Warnings:
-
-  - You are about to drop the `Prato` table. If the table is not empty, all the data it contains will be lost.
-
-*/
 -- CreateEnum
 CREATE TYPE "Status" AS ENUM ('EM_ANDAMENTO', 'CONCLUIDO', 'ARQUIVADO', 'SUSPENSO');
-
--- DropTable
-DROP TABLE "public"."Prato";
 
 -- CreateTable
 CREATE TABLE "Usuario" (
@@ -29,6 +20,7 @@ CREATE TABLE "Cliente" (
     "endereco" TEXT NOT NULL,
     "email" TEXT NOT NULL,
     "cpf_cnpj" TEXT NOT NULL,
+    "advogado_responsavel_id" INTEGER NOT NULL,
 
     CONSTRAINT "Cliente_pkey" PRIMARY KEY ("cliente_id")
 );
@@ -60,6 +52,9 @@ CREATE UNIQUE INDEX "Usuario_email_key" ON "Usuario"("email");
 
 -- CreateIndex
 CREATE UNIQUE INDEX "Cliente_email_key" ON "Cliente"("email");
+
+-- AddForeignKey
+ALTER TABLE "Cliente" ADD CONSTRAINT "Cliente_advogado_responsavel_id_fkey" FOREIGN KEY ("advogado_responsavel_id") REFERENCES "Usuario"("usuario_id") ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE "Caso" ADD CONSTRAINT "Caso_cliente_id_fkey" FOREIGN KEY ("cliente_id") REFERENCES "Cliente"("cliente_id") ON DELETE RESTRICT ON UPDATE CASCADE;

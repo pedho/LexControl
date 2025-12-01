@@ -21,7 +21,8 @@ model Usuario {
   eAdmin     Int    @default(0)
   senha      String
 
-  casos Caso[] @relation("AdvogadoResponsavel")
+  casos     Caso[]     @relation("AdvogadoResponsavel")
+  clientes  Cliente[]  @relation("AdvogadoDosClientes")
 }
 
 model Cliente {
@@ -32,8 +33,12 @@ model Cliente {
   email      String @unique
   cpf_cnpj   String
 
+  advogado_responsavel      Usuario @relation("AdvogadoDosClientes", fields: [advogado_responsavel_id], references: [usuario_id])
+  advogado_responsavel_id   Int
+
   casos Caso[]
 }
+
 
 model Caso {
   caso_id     Int       @id @default(autoincrement())

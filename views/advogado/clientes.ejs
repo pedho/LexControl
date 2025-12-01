@@ -20,27 +20,38 @@
     <% }) %>
     <% } %>
 
+        <div class="container mt-4">
+            <div class="container mt-2" style="display: flex">
+                <h3>Clientes</h3>
+                <hr/>
+                <a href="/advogado/clientes/add"><button class="btn btn-success">Novo Cliente</button></a>
+                
+            </div>
 
-      <div class="container mt-4">
+            <div class="card">
+                <% clientes.forEach(cli => { %>
+
+    <h5><%= cli.nome %> - <%= cli.email %></h5>
+    <h5><%= cli.telefone %></h5>
+    <h5><%= cli.endereco %></h5>
+    <h5><%= cli.cpf_cpnj %></h5>
+
+    <div style="display: flex; gap: 10px; margin-bottom: 20px;">
+        <a href="/advogado/clientes/edit/<%= cli.cliente_id %>">
+            <button class="btn btn-success">Editar</button>
+        </a>
+
+        <form action="/advogado/clientes/deletar" method="post">
+            <input type="hidden" name="id" value="<%= cli.cliente_id %>">
+            <button type="submit" class="btn btn-danger">Deletar</button>
+        </form>
+    </div>
+
+  <% }) %>
+            </div>
+        
       
-      <div class="card">
-          <h2>Novo advogado</h2>
-          <div class="card-body">
-              <form action="/admin/advogados/add" method="post">
 
-              <label for="nome">Nome: </label>
-              <input type="text" id="nome" name="nome" placeholder="Nome do advogado" class="form-control">
-              <label for="email">Email: </label>
-              <input type="text" id="email" name="email" placeholder="Email" class="form-control">
-              <label for="senha_pura">Senha: </label>
-              <input type="text" id="senha_pura" name="senha_pura" placeholder="Senha" class="form-control">
-              <br>
-              <button type="submit" class="btn btn-success">Adicionar advogado</button>
-              </form>
-
-          </div>
-      </div>
-      </div>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js" integrity="sha384-FKyoEForCGlyvwx9Hj09JcYn3nv7wiPVlz7YYwJrWVcXK/BmnVDxM+D2scQbITxI" crossorigin="anonymous"></script>
   </body>
