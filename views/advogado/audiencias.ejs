@@ -1,0 +1,54 @@
+<!doctype html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>LexControl - Audiências</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet">
+  </head>
+  <body>
+    <%- include("../partials/_navbar") %>
+
+    <% if (success_msg) { success_msg.forEach(msg => { %>
+      <div class="alert alert-success"><%= msg %></div>
+    <% }) } %>
+
+    <% if (error_msg) { error_msg.forEach(msg => { %>
+      <div class="alert alert-danger"><%= msg %></div>
+    <% }) } %>
+
+    <div class="container mt-4">
+      <div class="d-flex justify-content-between align-items-center mb-3">
+        <h3>Audiências</h3>
+        <a href="/advogado/audiencias/add" class="btn btn-success">Nova Audiência</a>
+      </div>
+
+      <div class="card p-3">
+        <% if (audiencias.length === 0) { %>
+          <p>Nenhuma audiência cadastrada.</p>
+        <% } %>
+
+        <% audiencias.forEach(a => { %>
+          <div class="mb-3">
+            <h5><%= a.caso.titulo %> — <small><%= a.caso.cliente ? a.caso.cliente.nome : '' %></small></h5>
+            <p><strong>Data / Hora:</strong> <%= a.data ? new Date(a.data).toLocaleString() : "—" %></p>
+            <p><strong>Local:</strong> <%= a.local %></p>
+
+            <div style="display:flex; gap:10px;">
+              <a href="/advogado/audiencias/edit/<%= a.audiencia_id %>">
+                <button class="btn btn-primary">Editar</button>
+              </a>
+
+              <form action="/advogado/audiencias/deletar" method="post" style="display:inline;">
+                <input type="hidden" name="id" value="<%= a.audiencia_id %>">
+                <button type="submit" class="btn btn-danger">Excluir</button>
+              </form>
+            </div>
+            <hr>
+          </div>
+        <% }) %>
+      </div>
+    </div>
+
+  </body>
+</html>

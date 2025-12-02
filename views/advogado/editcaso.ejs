@@ -1,0 +1,55 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>LexControl</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body>
+
+<%- include("../partials/_navbar") %>
+
+<div class="container mt-4">
+  <div class="card p-3">
+    <h2>Editar Caso</h2>
+
+    <form action="/advogado/casos/edit" method="post">
+
+      <input type="hidden" name="id" value="<%= caso.caso_id %>">
+
+      <label>Título:</label>
+      <input type="text" name="titulo" value="<%= caso.titulo %>" class="form-control">
+
+      <label>Status:</label>
+      <select name="status" class="form-control">
+        <option value="EM_ANDAMENTO" <%= caso.status === "EM_ANDAMENTO" ? "selected" : "" %>>Em andamento</option>
+        <option value="CONCLUIDO" <%= caso.status === "CONCLUIDO" ? "selected" : "" %>>Concluído</option>
+        <option value="ARQUIVADO" <%= caso.status === "ARQUIVADO" ? "selected" : "" %>>Arquivado</option>
+        <option value="SUSPENSO" <%= caso.status === "SUSPENSO" ? "selected" : "" %>>Suspenso</option>
+      </select>
+
+      <label>Prazo Final:</label>
+      <input type="date" name="prazo_final" class="form-control"
+        value="<%= caso.prazo_final ? caso.prazo_final.toISOString().substring(0,10) : "" %>">
+
+      <label>Cliente:</label>
+      <select name="cliente_id" class="form-control">
+        <% clientes.forEach(cli => { %>
+          <option value="<%= cli.cliente_id %>" 
+            <%= cli.cliente_id === caso.cliente_id ? "selected" : "" %>>
+            <%= cli.nome %>
+          </option>
+        <% }) %>
+      </select>
+
+      <br>
+      <button class="btn btn-success" type="submit">Salvar alterações</button>
+
+    </form>
+
+  </div>
+</div>
+
+</body>
+</html>

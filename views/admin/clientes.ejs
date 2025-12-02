@@ -21,36 +21,31 @@
     <% } %>
 
         <div class="container mt-4">
-            <div class="container mt-2" style="display: flex">
+            
                 <h3>Clientes</h3>
-                <hr/>
-                
-                
-            </div>
+            
+            <hr>
 
-            <div class="card">
+            <div class="card p-3">
                 <% clientes.forEach(cli => { %>
 
-    <h5><%= cli.nome %> - <%= cli.email %></h5>
-    <h5><%= cli.telefone %></h5>
-    <h5><%= cli.endereco %></h5>
-    <h5><%= cli.cpf_cnpj %></h5>
-    <h5>Advogado responsável: <%= cli.advogado_responsavel ? cli.advogado_responsavel.nome : "Não atribuído" %></h5>
+                <h5><%= cli.nome %> - <%= cli.email %></h5>
+                <h5><%= cli.telefone %></h5>
+                <h5><%= cli.endereco %></h5>
+                <h5><%= cli.cpf_cnpj %></h5>
+                <h5>Advogado responsável: <%= cli.advogado_responsavel ? cli.advogado_responsavel.nome : "Não atribuído" %></h5>
 
 
-    <div style="display: flex; gap: 10px; margin-bottom: 20px;">
-        <a href="/admin/clientes/edit/<%= cli.cliente_id %>">
-            <button class="btn btn-success">Editar</button>
-        </a>
+            <div style="display: flex; gap: 10px; margin-bottom: 20px;">
 
-        <form action="/admin/clientes/deletar" method="post">
-            <input type="hidden" name="id" value="<%= cli.cliente_id %>">
-            <button type="submit" class="btn btn-danger">Deletar</button>
-        </form>
-    </div>
-
-  <% }) %>
+                <form action="/admin/clientes/deletar" method="post">
+                    <input type="hidden" name="id" value="<%= cli.cliente_id %>">
+                    <button type="submit" class="btn btn-danger">Excluir</button>
+                </form>
             </div>
+
+            <% }) %>
+        </div>
         
       
 

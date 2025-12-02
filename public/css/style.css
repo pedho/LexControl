@@ -1,0 +1,42 @@
+/* Navbar com as cores da logo */
+.custom-navbar {
+    background-color: #0A1A44 !important; 
+    font-family: "Georgia", "Times New Roman", serif;
+    padding: 10px 20px;
+}
+
+/* Logo */
+.navbar-logo {
+    height: 40px;
+}
+
+/* Título ao lado da logo */
+.navbar-title {
+    color: white;
+    font-weight: bold;
+    font-size: 1.3rem;
+    letter-spacing: 1px;
+}
+
+/* Links */
+.custom-navbar .nav-link {
+    color: #e6e6e6 !important;
+    margin-left: 10px;
+    font-size: 1.05rem;
+    transition: 0.2s;
+}
+
+/* Hover com azul mais claro da identidade visual */
+.custom-navbar .nav-link:hover {
+    color: #b3c7ff !important;
+}
+
+/* Link de sair */
+.logout-link {
+    color: #ff6b6b !important;
+    font-weight: bold;
+}
+
+.logout-link:hover {
+    color: #ff8c8c !important;
+}

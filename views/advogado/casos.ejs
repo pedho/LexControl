@@ -1,0 +1,60 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>LexControl</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet">
+  </head>
+  <body>
+    <%- include("../partials/_navbar") %>
+
+    <% if (success_msg) { success_msg.forEach(msg => { %>
+      <div class="alert alert-success"><%= msg %></div>
+    <% }) } %>
+
+    <% if (error_msg) { error_msg.forEach(msg => { %>
+      <div class="alert alert-danger"><%= msg %></div>
+    <% }) } %>
+
+    <div class="container mt-4">
+        <div class="container mt-2" style="display: flex; justify-content: space-between;">
+            <h3>Casos</h3>
+            <a href="/advogado/casos/add">
+              <button class="btn btn-success">Novo Caso</button>
+            </a>
+        </div>
+
+        <div class="card p-3">
+
+            <% if (casos.length === 0) { %>
+                <p>Nenhum caso cadastrado.</p>
+            <% } %>
+            
+            <% casos.forEach(caso => { %>
+
+              <h4><%= caso.titulo %></h4>
+              <p><strong>Status:</strong> <%= caso.status %></p>
+              <p><strong>Prazo Final:</strong> 
+                <%= caso.prazo_final ? caso.prazo_final.toLocaleDateString() : "Sem prazo" %>
+              </p>
+
+              <p><strong>Cliente:</strong> <%= caso.cliente.nome %></p>
+
+              <div style=" display: flex; gap: 10px; margin-bottom: 20px;">
+                <a href="/advogado/casos/edit/<%= caso.caso_id %>">
+                  <button class="btn btn-primary">Editar</button>
+                </a>
+
+                <form action="/advogado/casos/deletar" method="post">
+                    <input type="hidden" name="id" value="<%= caso.caso_id %>">
+                    <button class="btn btn-danger" type="submit">Excluir</button>
+                </form>
+              </div>
+
+              <hr>
+            <% }) %>
+        </div>
+    </div>
+  </body>
+</html>

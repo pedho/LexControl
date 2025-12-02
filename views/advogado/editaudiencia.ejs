@@ -1,0 +1,42 @@
+<!doctype html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>LexControl - Editar Audiência</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet">
+  </head>
+  <body>
+    <%- include("../partials/_navbar") %>
+
+    <div class="container mt-4">
+      <div class="card p-3">
+        <h2>Editar Audiência</h2>
+
+        <form action="/advogado/audiencias/edit" method="post">
+          <input type="hidden" name="id" value="<%= audiencia.audiencia_id %>">
+
+          <label for="caso_id">Caso:</label>
+          <select name="caso_id" id="caso_id" class="form-control" required>
+            <% casos.forEach(c => { %>
+              <option value="<%= c.caso_id %>" <%= c.caso_id === audiencia.caso_id ? "selected" : "" %>>
+                <%= c.titulo %> <% if (c.cliente) { %> - <%= c.cliente.nome %> <% } %>
+              </option>
+            <% }) %>
+          </select>
+
+          <label for="data" class="mt-2">Data e Hora:</label>
+          <input type="datetime-local" id="data" name="data" class="form-control"
+                 value="<%= audiencia.data ? new Date(audiencia.data).toISOString().slice(0,16) : '' %>" required>
+
+          <label for="local" class="mt-2">Local:</label>
+          <input type="text" id="local" name="local" class="form-control" value="<%= audiencia.local %>" required>
+
+          <br>
+          <button class="btn btn-success" type="submit">Salvar alterações</button>
+        </form>
+      </div>
+    </div>
+
+  </body>
+</html>

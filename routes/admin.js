@@ -144,5 +144,99 @@ router.get('/clientes', eAdmin, async (req, res) => {
   }
 });  
 
+router.post("/clientes/deletar", eAdmin, async (req, res) => {
+  try {
+    const id = Number(req.body.id);
+
+    await prisma.cliente.delete({
+      where: { cliente_id: id }
+    });
+
+    req.flash("success_msg", "Cliente deletado!");
+    res.redirect("/admin/clientes");
+
+  } catch (err) {
+    console.error(err);
+    req.flash("error_msg", "Erro ao deletar cliente");
+    res.redirect("/admin/clientes");
+  }
+});
+
+router.get("/casos", eAdmin, async (req, res) => {
+  try {
+    const casos = await prisma.caso.findMany({
+      orderBy: { caso_id: "desc" },
+      include: {
+        cliente: true,
+        advogado_responsavel: true
+      }
+    });
+
+    res.render("admin/casos", { casos });
+  } catch (err) {
+    console.log(err);
+    req.flash("error_msg", "Erro ao listar casos");
+    res.redirect("/admin");
+  }
+});
+
+router.post("/casos/deletar", eAdmin, async (req, res) => {
+  try {
+    const id = Number(req.body.id);
+
+    await prisma.caso.delete({
+      where: { caso_id: id }
+    });
+
+    req.flash("success_msg", "Caso deletado!");
+    res.redirect("/admin/casos");
+  } catch (err) {
+    console.log(err);
+    req.flash("error_msg", "Erro ao deletar caso");
+    res.redirect("/admin/casos");
+  }
+});
+
+router.get("/audiencias", eAdmin, async (req, res) => {
+  try {
+    const audiencias = await prisma.audiencia.findMany({
+      orderBy: { audiencia_id: "desc" },
+      include: {
+        caso: {
+          include: {
+            cliente: true,
+            advogado_responsavel: true
+          }
+        }
+      }
+    });
+
+    res.render("admin/audiencias", { audiencias });
+
+  } catch (err) {
+    console.log(err);
+    req.flash("error_msg", "Erro ao listar audiências");
+    res.redirect("/admin");
+  }
+});
+
+router.post("/audiencias/deletar", eAdmin, async (req, res) => {
+  try {
+    const id = Number(req.body.id);
+
+    await prisma.audiencia.delete({
+      where: { audiencia_id: id }
+    });
+
+    req.flash("success_msg", "Audiência deletada!");
+    res.redirect("/admin/audiencias");
+
+  } catch (err) {
+    console.log(err);
+    req.flash("error_msg", "Erro ao deletar audiência");
+    res.redirect("/admin/audiencias");
+  }
+});
+
 module.exports = router
 
