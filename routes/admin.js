@@ -10,9 +10,81 @@ router.get("/", (req, res) => {
   res.send("Painel do admin")
 })
 
-router.get("/inicio", eAdmin, async(req, res) => {
-  res.render("index");
+router.get("/inicio", eAdmin, async (req, res) => {
+  try {
+    const data_atual = new Date();
+    const data_limite = new Date();
+    data_limite.setDate(data_atual.getDate() + 7);
+
+    const Audiencias = await prisma.audiencia.findMany({
+      where: {
+        data: { gte: data_atual, lte: data_limite }
+      },
+      orderBy: { data: "asc" },
+      include: {
+        caso: {
+          include: {
+            cliente: true,
+            advogado_responsavel: true
+          }
+        }
+      }
+    });
+
+    const totalAdvogados = await prisma.usuario.count({
+      where: { eAdmin: 0 }
+    });
+
+    const casosPorStatus = await prisma.caso.groupBy({
+      by: ['status'],
+      _count: { status: true }
+    });
+
+    const concluidosPorAdvogado = await prisma.caso.groupBy({
+      by: ['advogado_responsavel_id'],
+      where: { status: "CONCLUIDO" },
+      _count: { advogado_responsavel_id: true }
+    });
+
+    const pendentesPorAdvogado = await prisma.caso.groupBy({
+      by: ['advogado_responsavel_id'],
+      where: { status: "EM_ANDAMENTO" },
+      _count: { advogado_responsavel_id: true }
+    });
+
+    const advogados = await prisma.usuario.findMany({
+      where: { eAdmin: 0 }
+    });
+
+    const advogados_nomes = advogados.map(a => a.nome);
+
+    function mapDadosPorAdvogado(dados) {
+      return advogados.map(a => {
+        const found = dados.find(d => d.advogado_responsavel_id === a.usuario_id);
+        return found ? found._count.advogado_responsavel_id : 0;
+      });
+    }
+
+    const concluidosArray = mapDadosPorAdvogado(concluidosPorAdvogado);
+    const pendentesArray = mapDadosPorAdvogado(pendentesPorAdvogado);
+
+    res.render("admin/index", { 
+      Audiencias,
+      totalAdvogados,
+      casosPorStatus,
+      advogados_nomes,
+      concluidosArray,
+      pendentesArray
+    });
+
+  } catch (err) {
+    console.error(err);
+    req.flash("error_msg", "Erro ao carregar audiências");
+    res.redirect("/admin");
+  }
 });
+
+
 
 router.get('/advogados', eAdmin, async (req, res) => {
   

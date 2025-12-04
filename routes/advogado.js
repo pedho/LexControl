@@ -12,16 +12,86 @@ router.get("/login", (req, res) => {
 
 router.post("/login", (req, res, next) => {
 
-    passport.authenticate("local", {
-        successRedirect: "/inicio",
-        failureRedirect: "/advogado/login",
-        failureFlash: true
-    })(req, res, next)
-})
+    passport.authenticate("local", (err, user, info) => {
 
-router.get("/inicio", eUser, async(req, res) => {
-  res.render("./index");
+        if (err) {
+            return next(err);
+        }
+
+        if (!user) {
+            req.flash("error_msg", "Dados inválidos");
+            return res.redirect("/advogado/login");
+        }
+
+        req.logIn(user, (err) => {
+            if (err) {
+                return next(err);
+            }
+
+            
+            if (user.eAdmin === 1) {
+                return res.redirect("/admin/inicio");
+            } else {
+                return res.redirect("/advogado/inicio");
+            }
+        });
+
+    })(req, res, next);
+
 });
+
+
+router.get("/inicio", eUser, async (req, res) => {
+  try {
+    const advogadoId = req.user.usuario_id;
+    const data_atual = new Date();
+    const data_limite = new Date();
+    data_limite.setDate(data_atual.getDate() + 7);
+
+    const Audiencias = await prisma.audiencia.findMany({
+      where: {
+        caso: { advogado_responsavel_id: advogadoId },
+        data: { gte: data_atual, lte: data_limite }
+      },
+      orderBy: { data: "asc" },
+      include: {
+        caso: { include: { cliente: true } }
+      }
+    });
+
+    const totalClientes = await prisma.cliente.count({
+      where: { advogado_responsavel_id: advogadoId }
+    });
+
+    const casosPorStatus = await prisma.caso.groupBy({
+      by: ['status'],
+      where: { advogado_responsavel_id: advogadoId },
+      _count: { status: true }
+    });
+
+    const concluidosArray = await prisma.caso.count({
+      where: { advogado_responsavel_id: advogadoId, status: "CONCLUIDO" }
+    });
+
+    const pendentesArray = await prisma.caso.count({
+      where: { advogado_responsavel_id: advogadoId, status: "EM_ANDAMENTO" }
+    });
+
+    res.render("advogado/index", {
+      Audiencias,
+      totalClientes,
+      casosPorStatus,
+      concluidosArray,
+      pendentesArray
+    });
+
+  } catch (err) {
+    console.error(err);
+    req.flash("error_msg", "Erro ao carregar painel");
+    res.redirect("/advogado");
+  }
+});
+
 
 router.get('/clientes', eUser, async (req, res) => {
   

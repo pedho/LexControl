@@ -33,7 +33,7 @@
             
             <% casos.forEach(caso => { %>
 
-              <h4><%= caso.titulo %></h4>
+              <h5><%= caso.titulo %> - Processo N° <%= caso.caso_id %></h5>
               <p><strong>Status:</strong> <%= caso.status %></p>
               <p><strong>Prazo Final:</strong> 
                 <%= caso.prazo_final ? caso.prazo_final.toLocaleDateString() : "Sem prazo" %>

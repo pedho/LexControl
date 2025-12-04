@@ -1,0 +1,87 @@
+<!doctype html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Painel Advogado - LexControl</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+      #chartCasosPorStatus { min-height: 320px; }
+    </style>
+  </head>
+  <body>
+    <%- include("../partials/_navbar") %>
+
+    <% if (success_msg && success_msg.length > 0) { %>
+      <% success_msg.forEach(msg => { %>
+        <div class="alert alert-success"><%= msg %></div>
+      <% }) %>
+    <% } %>
+    <% if (error_msg && error_msg.length > 0) { %>
+      <% error_msg.forEach(msg => { %>
+        <div class="alert alert-danger"><%= msg %></div>
+      <% }) %>
+    <% } %>
+
+    <div class="container mt-4">
+      <h3 class="mb-3">Painel de Controle</h3>
+
+      <div class="card m-2 p-3 mb-4">
+        <% if (!Audiencias || Audiencias.length === 0) { %>
+            <p class="text-muted mb-0">Nenhuma audiência marcada para os próximos 7 dias.</p>
+        <% } else { %>
+            <p class="m-2">Audiências nos próximos 7 dias:</p>
+            <% Audiencias.forEach(a => { %>
+              <div class="card p-3 mb-2">
+                <div><strong>Data:</strong> <%= new Date(a.data).toLocaleDateString("pt-BR") %> <strong>em</strong> <%= a.local %></div>
+                <small><strong>Caso:</strong> <%= a.caso.titulo %> — <strong>Cliente:</strong> <%= a.caso.cliente.nome %></small>
+              </div>
+            <% }) %>
+        <% } %>
+      </div>
+
+      <div class="card p-3 mb-4">
+        <h5>Total de Clientes</h5>
+        <p class="display-6"><%= totalClientes %></p>
+      </div>
+
+      <div class="card p-3 mb-4">
+        <h5>Casos por Status</h5>
+        <div id="chartCasosPorStatus"></div>
+      </div>
+
+      <div class="row">
+        <div class="col-md-6">
+          <div class="card p-3 mb-4">
+            <h6>Casos Concluídos</h6>
+            <p class="display-6"><%= concluidosArray %></p>
+          </div>
+        </div>
+        <div class="col-md-6">
+          <div class="card p-3 mb-4">
+            <h6>Casos em Andamento</h6>
+            <p class="display-6"><%= pendentesArray %></p>
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/apexcharts@3.35.3/dist/apexcharts.min.js"></script>
+    <script>
+      const casosPorStatus = <%- JSON.stringify(casosPorStatus || []) %>;
+      const chartData = casosPorStatus.map(c => c._count.status);
+      const chartLabels = casosPorStatus.map(c => c.status);
+
+      const chart = new ApexCharts(document.querySelector("#chartCasosPorStatus"), {
+        chart: { type: 'bar', height: 320 },
+        series: [{ name: 'Casos', data: chartData }],
+        xaxis: { categories: chartLabels },
+        title: { text: 'Casos por Status' }
+      });
+
+      chart.render();
+    </script>
+  </body>
+</html>

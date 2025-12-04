@@ -30,7 +30,7 @@
 
         <% audiencias.forEach(a => { %>
           <div class="mb-3">
-            <h5><%= a.caso.titulo %> — <small><%= a.caso.cliente ? a.caso.cliente.nome : '' %></small></h5>
+            <h5><%= a.caso.titulo %> — Processo N° <%= a.caso.caso_id %></h5>
             <p><strong>Data / Hora:</strong> <%= a.data ? new Date(a.data).toLocaleString() : "—" %></p>
             <p><strong>Local:</strong> <%= a.local %></p>
 
