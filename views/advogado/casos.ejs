@@ -1,60 +1,79 @@
 <!doctype html>
-<html lang="en">
-  <head>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>LexControl</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet">
-  </head>
-  <body>
-    <%- include("../partials/_navbar") %>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>LexControl</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body>
+<%- include("../partials/_navbar") %>
 
-    <% if (success_msg) { success_msg.forEach(msg => { %>
-      <div class="alert alert-success"><%= msg %></div>
-    <% }) } %>
+<div class="container mt-4">
+  <div class="d-flex justify-content-between mb-3">
+    <h3>Casos</h3>
+    <a href="/advogado/casos/add" class="btn btn-success">Novo Caso</a>
+  </div>
 
-    <% if (error_msg) { error_msg.forEach(msg => { %>
-      <div class="alert alert-danger"><%= msg %></div>
-    <% }) } %>
-
-    <div class="container mt-4">
-        <div class="container mt-2" style="display: flex; justify-content: space-between;">
-            <h3>Casos</h3>
-            <a href="/advogado/casos/add">
-              <button class="btn btn-success">Novo Caso</button>
-            </a>
-        </div>
-
-        <div class="card p-3">
-
-            <% if (casos.length === 0) { %>
-                <p>Nenhum caso cadastrado.</p>
-            <% } %>
-            
-            <% casos.forEach(caso => { %>
-
-              <h5><%= caso.titulo %> - Processo N° <%= caso.caso_id %></h5>
-              <p><strong>Status:</strong> <%= caso.status %></p>
-              <p><strong>Prazo Final:</strong> 
-                <%= caso.prazo_final ? caso.prazo_final.toLocaleDateString() : "Sem prazo" %>
-              </p>
-
-              <p><strong>Cliente:</strong> <%= caso.cliente.nome %></p>
-
-              <div style=" display: flex; gap: 10px; margin-bottom: 20px;">
-                <a href="/advogado/casos/edit/<%= caso.caso_id %>">
-                  <button class="btn btn-primary">Editar</button>
-                </a>
-
-                <form action="/advogado/casos/deletar" method="post">
-                    <input type="hidden" name="id" value="<%= caso.caso_id %>">
-                    <button class="btn btn-danger" type="submit">Excluir</button>
-                </form>
-              </div>
-
-              <hr>
-            <% }) %>
-        </div>
+  <form method="GET" action="/advogado/casos" class="mb-3">
+    <div class="input-group">
+      <input type="number" name="search" class="form-control"
+        placeholder="Buscar por número do processo"
+        value="<%= typeof search !== 'undefined' ? search : '' %>">
+      <button class="btn btn-primary">Buscar</button>
     </div>
-  </body>
+  </form>
+
+  <%
+    const emAndamento = casos.filter(c => c.status === "EM_ANDAMENTO");
+    const outros = casos.filter(c => c.status !== "EM_ANDAMENTO");
+  %>
+
+  <h5 class="text-success">Casos em andamento</h5>
+
+  <% if (emAndamento.length === 0) { %>
+    <p class="text-muted">Nenhum caso em andamento.</p>
+  <% } %>
+
+  <% emAndamento.forEach(caso => { %>
+    <div class="card p-3 mb-3 border-success">
+      <h5><%= caso.titulo %> — Processo Nº <%= caso.caso_id %></h5>
+      <p><strong>Status:</strong> <%= caso.status %></p>
+      <p><strong>Prazo Final:</strong> <%= caso.prazo_final ? caso.prazo_final.toLocaleDateString() : "Sem prazo" %></p>
+      <p><strong>Cliente:</strong> <%= caso.cliente.nome %></p>
+
+      <div class="d-flex gap-2">
+        <a href="/advogado/casos/edit/<%= caso.caso_id %>" class="btn btn-primary">Editar</a>
+        <form action="/advogado/casos/deletar" method="post">
+          <input type="hidden" name="id" value="<%= caso.caso_id %>">
+          <button class="btn btn-danger">Excluir</button>
+        </form>
+      </div>
+    </div>
+  <% }) %>
+
+  <h5 class="text-secondary mt-4">Casos finalizados / suspensos</h5>
+
+  <% if (outros.length === 0) { %>
+    <p class="text-muted">Nenhum caso finalizado.</p>
+  <% } %>
+
+  <% outros.forEach(caso => { %>
+    <div class="card p-3 mb-3">
+      <h5><%= caso.titulo %> — Processo Nº <%= caso.caso_id %></h5>
+      <p><strong>Status:</strong> <%= caso.status %></p>
+      <p><strong>Prazo Final:</strong> <%= caso.prazo_final ? caso.prazo_final.toLocaleDateString() : "Sem prazo" %></p>
+      <p><strong>Cliente:</strong> <%= caso.cliente.nome %></p>
+
+      <div class="d-flex gap-2">
+        <a href="/advogado/casos/edit/<%= caso.caso_id %>" class="btn btn-primary">Editar</a>
+        <form action="/advogado/casos/deletar" method="post">
+          <input type="hidden" name="id" value="<%= caso.caso_id %>">
+          <button class="btn btn-danger">Excluir</button>
+        </form>
+      </div>
+    </div>
+  <% }) %>
+</div>
+</body>
 </html>

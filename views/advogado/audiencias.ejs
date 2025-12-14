@@ -1,54 +1,79 @@
 <!doctype html>
 <html lang="pt-BR">
-  <head>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>LexControl - Audiências</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet">
-  </head>
-  <body>
-    <%- include("../partials/_navbar") %>
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>LexControl</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body>
+<%- include("../partials/_navbar") %>
 
-    <% if (success_msg) { success_msg.forEach(msg => { %>
-      <div class="alert alert-success"><%= msg %></div>
-    <% }) } %>
+<div class="container mt-4">
+  <div class="d-flex justify-content-between mb-3">
+    <h3>Audiências</h3>
+    <a href="/advogado/audiencias/add" class="btn btn-success">Nova Audiência</a>
+  </div>
 
-    <% if (error_msg) { error_msg.forEach(msg => { %>
-      <div class="alert alert-danger"><%= msg %></div>
-    <% }) } %>
+  <form method="GET" action="/advogado/audiencias" class="mb-3">
+    <div class="input-group">
+      <input type="number" name="search" class="form-control"
+        placeholder="Buscar por número do processo"
+        value="<%= typeof search !== 'undefined' ? search : '' %>">
+      <button class="btn btn-primary">Buscar</button>
+    </div>
+  </form>
 
-    <div class="container mt-4">
-      <div class="d-flex justify-content-between align-items-center mb-3">
-        <h3>Audiências</h3>
-        <a href="/advogado/audiencias/add" class="btn btn-success">Nova Audiência</a>
-      </div>
+  <%
+    const futuras = audiencias.filter(a => new Date(a.data) >= hoje);
+    const passadas = audiencias.filter(a => new Date(a.data) < hoje);
+  %>
 
-      <div class="card p-3">
-        <% if (audiencias.length === 0) { %>
-          <p>Nenhuma audiência cadastrada.</p>
-        <% } %>
+  <h5 class="text-success">Audiências futuras</h5>
 
-        <% audiencias.forEach(a => { %>
-          <div class="mb-3">
-            <h5><%= a.caso.titulo %> — Processo N° <%= a.caso.caso_id %></h5>
-            <p><strong>Data / Hora:</strong> <%= a.data ? new Date(a.data).toLocaleString() : "—" %></p>
-            <p><strong>Local:</strong> <%= a.local %></p>
+  <% if (futuras.length === 0) { %>
+    <p class="text-muted">Nenhuma audiência futura.</p>
+  <% } %>
 
-            <div style="display:flex; gap:10px;">
-              <a href="/advogado/audiencias/edit/<%= a.audiencia_id %>">
-                <button class="btn btn-primary">Editar</button>
-              </a>
+  <% futuras.forEach(a => { %>
+    <div class="card p-3 mb-3 border-success">
+      <h5><%= a.caso.titulo %> — Processo Nº <%= a.caso.caso_id %></h5>
+      <p><strong>Data / Hora:</strong> <%= a.data ? new Date(a.data).toLocaleString() : "—" %></p>
+      <p><strong>Local:</strong> <%= a.local %></p>
+      <p><strong>Cliente:</strong> <%= a.caso.cliente.nome %></p>
 
-              <form action="/advogado/audiencias/deletar" method="post" style="display:inline;">
-                <input type="hidden" name="id" value="<%= a.audiencia_id %>">
-                <button type="submit" class="btn btn-danger">Excluir</button>
-              </form>
-            </div>
-            <hr>
-          </div>
-        <% }) %>
+      <div class="d-flex gap-2">
+        <a href="/advogado/audiencias/edit/<%= a.audiencia_id %>" class="btn btn-primary">Editar</a>
+        <form action="/advogado/audiencias/deletar" method="post">
+          <input type="hidden" name="id" value="<%= a.audiencia_id %>">
+          <button class="btn btn-danger">Excluir</button>
+        </form>
       </div>
     </div>
+  <% }) %>
 
-  </body>
+  <h5 class="text-secondary mt-4">Audiências passadas</h5>
+
+  <% if (passadas.length === 0) { %>
+    <p class="text-muted">Nenhuma audiência passada.</p>
+  <% } %>
+
+  <% passadas.forEach(a => { %>
+    <div class="card p-3 mb-3">
+      <h5><%= a.caso.titulo %> — Processo Nº <%= a.caso.caso_id %></h5>
+      <p><strong>Data / Hora:</strong> <%= a.data ? new Date(a.data).toLocaleString() : "—" %></p>
+      <p><strong>Local:</strong> <%= a.local %></p>
+      <p><strong>Cliente:</strong> <%= a.caso.cliente.nome %></p>
+
+      <div class="d-flex gap-2">
+        <a href="/advogado/audiencias/edit/<%= a.audiencia_id %>" class="btn btn-primary">Editar</a>
+        <form action="/advogado/audiencias/deletar" method="post">
+          <input type="hidden" name="id" value="<%= a.audiencia_id %>">
+          <button class="btn btn-danger">Excluir</button>
+        </form>
+      </div>
+    </div>
+  <% }) %>
+</div>
+</body>
 </html>

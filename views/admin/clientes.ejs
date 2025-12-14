@@ -28,12 +28,12 @@
 
             <div class="card p-3">
                 <% clientes.forEach(cli => { %>
-
+                
                 <h5><%= cli.nome %> - <%= cli.email %></h5>
-                <h5><%= cli.telefone %></h5>
-                <h5><%= cli.endereco %></h5>
-                <h5><%= cli.cpf_cnpj %></h5>
-                <h5>Advogado responsável: <%= cli.advogado_responsavel ? cli.advogado_responsavel.nome : "Não atribuído" %></h5>
+                <h6><%= cli.telefone %></h6>
+                <h6><%= cli.endereco %></h6>
+                <h6><%= cli.cpf_cnpj %></h6>
+                <h6>Advogado responsável: <%= cli.advogado_responsavel ? cli.advogado_responsavel.nome : "Não atribuído" %></h6>
 
 
             <div style="display: flex; gap: 10px; margin-bottom: 20px;">
@@ -42,8 +42,9 @@
                     <input type="hidden" name="id" value="<%= cli.cliente_id %>">
                     <button type="submit" class="btn btn-danger">Excluir</button>
                 </form>
+                
             </div>
-
+            <hr>
             <% }) %>
         </div>
         

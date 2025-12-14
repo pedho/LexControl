@@ -207,17 +207,26 @@ router.post("/clientes/deletar", eUser, async (req, res) => {
 
 router.get("/casos", eUser, async (req, res) => {
   try {
+    const search = req.query.search?.trim();
+    let whereClause = { advogado_responsavel_id: req.user.usuario_id };
+
+    if (search && !isNaN(search)) {
+      whereClause.caso_id = Number(search);
+    }
+
     const casos = await prisma.caso.findMany({
-      where: { advogado_responsavel_id: req.user.usuario_id },
-      orderBy: { caso_id: "desc" },
+      where: whereClause,
+      orderBy: [
+        { status: "asc" },
+        { caso_id: "desc" }
+      ],
       include: { cliente: true }
     });
 
-    res.render("advogado/casos", { casos });
+    res.render("advogado/casos", { casos, search });
   } catch (err) {
-    console.error(err);
     req.flash("error_msg", "Erro ao listar casos");
-    res.redirect("/");
+    res.redirect("/advogado");
   }
 });
 
@@ -237,7 +246,7 @@ router.post("/casos/add", eUser, async (req, res) => {
       data: {
         titulo,
         status,
-        prazo_final: prazo_final ? new Date(prazo_final) : null,
+        prazo_final: prazo_final ? new Date(prazo_final + "T12:00:00") : null,
         cliente_id: Number(cliente_id),
         advogado_responsavel_id: req.user.usuario_id
       }
@@ -281,7 +290,7 @@ router.post("/casos/edit", eUser, async (req, res) => {
       data: {
         titulo,
         status,
-        prazo_final: prazo_final ? new Date(prazo_final) : null,
+        prazo_final: prazo_final ? new Date(prazo_final + "T12:00:00") : null,
         cliente_id: Number(cliente_id)
       }
     });
@@ -314,27 +323,31 @@ router.post("/casos/deletar", eUser, async (req, res) => {
 
 router.get("/audiencias", eUser, async (req, res) => {
   try {
+    const search = req.query.search?.trim();
+    const hoje = new Date();
+    let whereClause = {
+      caso: { advogado_responsavel_id: req.user.usuario_id }
+    };
+
+    if (search && !isNaN(search)) {
+      whereClause.caso.caso_id = Number(search);
+    }
+
     const audiencias = await prisma.audiencia.findMany({
-      where: {
-        caso: {
-          advogado_responsavel_id: req.user.usuario_id
-        }
-      },
-      orderBy: { audiencia_id: "desc" },
+      where: whereClause,
+      orderBy: { data: "asc" },
       include: {
-        caso: {
-          include: { cliente: true }
-        }
+        caso: { include: { cliente: true } }
       }
     });
 
-    res.render("advogado/audiencias", { audiencias });
+    res.render("advogado/audiencias", { audiencias, search, hoje });
   } catch (err) {
-    console.error(err);
     req.flash("error_msg", "Erro ao listar audiências");
-    res.redirect("/");
+    res.redirect("/advogado");
   }
 });
+
 
 router.get("/audiencias/add", eUser, async (req, res) => {
   try {

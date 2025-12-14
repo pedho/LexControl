@@ -31,8 +31,7 @@
             <div class="card p-3">
               <% advogados.forEach(adv => { %>
 
-              <h5><%= adv.nome %></h3>
-              <h5><%= adv.email %></h3>
+              <h5><%= adv.nome %> - <%= adv.email %></h3>
 
               <div style="display: flex; gap: 10px; margin-bottom: 20px;">
                   <a href="/admin/advogados/edit/<%= adv.usuario_id %>">

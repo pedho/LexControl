@@ -236,21 +236,36 @@ router.post("/clientes/deletar", eAdmin, async (req, res) => {
 
 router.get("/casos", eAdmin, async (req, res) => {
   try {
+    const search = req.query.search?.trim();
+
+    let whereClause = {};
+
+    if (search && !isNaN(search)) {
+      whereClause.caso_id = Number(search);
+    }
+
     const casos = await prisma.caso.findMany({
-      orderBy: { caso_id: "desc" },
+      where: Object.keys(whereClause).length ? whereClause : undefined,
+
+      orderBy: [
+        { status: "asc" },
+        { caso_id: "desc" }
+      ],
+
       include: {
         cliente: true,
         advogado_responsavel: true
       }
     });
 
-    res.render("admin/casos", { casos });
+    res.render("admin/casos", { casos, search });
   } catch (err) {
-    console.log(err);
+    console.error(err);
     req.flash("error_msg", "Erro ao listar casos");
     res.redirect("/admin");
   }
 });
+
 
 router.post("/casos/deletar", eAdmin, async (req, res) => {
   try {
@@ -271,8 +286,26 @@ router.post("/casos/deletar", eAdmin, async (req, res) => {
 
 router.get("/audiencias", eAdmin, async (req, res) => {
   try {
+    const search = req.query.search?.trim();
+    const hoje = new Date();
+
+    let whereClause = {};
+
+    if (search && !isNaN(search)) {
+      whereClause = {
+        caso: {
+          caso_id: Number(search)
+        }
+      };
+    }
+
     const audiencias = await prisma.audiencia.findMany({
-      orderBy: { audiencia_id: "desc" },
+      where: Object.keys(whereClause).length ? whereClause : undefined,
+
+      orderBy: {
+        data: "asc"
+      },
+
       include: {
         caso: {
           include: {
@@ -283,7 +316,11 @@ router.get("/audiencias", eAdmin, async (req, res) => {
       }
     });
 
-    res.render("admin/audiencias", { audiencias });
+    res.render("admin/audiencias", {
+      audiencias,
+      search,
+      hoje
+    });
 
   } catch (err) {
     console.log(err);
@@ -291,6 +328,7 @@ router.get("/audiencias", eAdmin, async (req, res) => {
     res.redirect("/admin");
   }
 });
+
 
 router.post("/audiencias/deletar", eAdmin, async (req, res) => {
   try {
