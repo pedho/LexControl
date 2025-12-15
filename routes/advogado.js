@@ -200,7 +200,7 @@ router.post("/clientes/deletar", eUser, async (req, res) => {
 
   } catch (err) {
     console.error(err);
-    req.flash("error_msg", "Erro ao deletar cliente");
+    req.flash("error_msg", "Erro ao deletar cliente (ele pode ter associados)");
     res.redirect("/advogado/clientes");
   }
 });
@@ -316,7 +316,7 @@ router.post("/casos/deletar", eUser, async (req, res) => {
 
   } catch (err) {
     console.error(err);
-    req.flash("error_msg", "Erro ao excluir caso");
+    req.flash("error_msg", "Erro ao excluir caso (ele pode ter associados)");
     res.redirect("/advogado/casos");
   }
 });

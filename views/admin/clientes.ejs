@@ -27,6 +27,10 @@
             <hr>
 
             <div class="card p-3">
+                <% if (clientes.length === 0) { %>
+                    <p>Nenhum cliente cadastrado.</p>
+                <% } %>
+                
                 <% clientes.forEach(cli => { %>
                 
                 <h5><%= cli.nome %> - <%= cli.email %></h5>

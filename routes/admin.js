@@ -191,7 +191,7 @@ router.post("/advogados/deletar", eAdmin, async (req, res) => {
 
   } catch (err) {
     console.error(err);
-    req.flash("error_msg", "Erro ao deletar advogado");
+    req.flash("error_msg", "Erro ao deletar advogado (ele pode ter associados)");
     res.redirect("/admin/advogados");
   }
 });
@@ -229,7 +229,7 @@ router.post("/clientes/deletar", eAdmin, async (req, res) => {
 
   } catch (err) {
     console.error(err);
-    req.flash("error_msg", "Erro ao deletar cliente");
+    req.flash("error_msg", "Erro ao deletar cliente (ele pode ter associados)");
     res.redirect("/admin/clientes");
   }
 });
@@ -279,7 +279,7 @@ router.post("/casos/deletar", eAdmin, async (req, res) => {
     res.redirect("/admin/casos");
   } catch (err) {
     console.log(err);
-    req.flash("error_msg", "Erro ao deletar caso");
+    req.flash("error_msg", "Erro ao deletar caso (ele pode ter associados)");
     res.redirect("/admin/casos");
   }
 });
