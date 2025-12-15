@@ -8,6 +8,17 @@
   </head>
   <body>
     <%- include("../partials/_navbar") %>
+    <% if (success_msg && success_msg.length > 0) { %>
+    <% success_msg.forEach(msg => { %>
+        <div class="alert alert-success"><%= msg %></div>
+    <% }) %>
+    <% } %>
+
+    <% if (error_msg && error_msg.length > 0) { %>
+    <% error_msg.forEach(msg => { %>
+        <div class="alert alert-danger"><%= msg %></div>
+    <% }) %>
+    <% } %>
 
     <div class="container mt-4">
       <div class="card p-3">
